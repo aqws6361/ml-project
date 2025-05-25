@@ -4,7 +4,9 @@ from clip_utils import load_clip_resources, perform_zero_shot_classification
 from diffusion_utils import load_diffusion_pipeline, generate_image_from_prompt, DEFAULT_DIFFUSION_MODEL
 from clip_utils import DEFAULT_CLIP_MODEL # 引入預設 CLIP 模型名稱
 
+
 def main():
+    print("DEBUG: main() 函式開始執行")
     parser = argparse.ArgumentParser(description="AI 圖像生成與分析工具")
     parser.add_argument("--demo", type=str, required=True, choices=["clip", "diffusion"],
                         help="選擇要執行的演示：'clip' 或 'diffusion'")
@@ -22,15 +24,17 @@ def main():
     parser.add_argument("--guidance_scale", type=float, default=7.5, help="[擴散模型演示用] 引導強度")
     parser.add_argument("--negative_prompt", type=str, default=None, help="[擴散模型演示用] 負面提示")
 
-
     args = parser.parse_args()
+    print(f"DEBUG: 解析到的參數: {args}")
 
     if args.demo == "clip":
+        print("DEBUG: 進入 CLIP 演示模式")
         if not args.image_path or not args.labels:
             parser.error("--image_path 和 --labels 是 CLIP 演示的必需參數。")
         print("--- 開始 CLIP 零樣本分類演示 ---")
         clip_model, clip_processor = load_clip_resources(args.clip_model)
         if clip_model and clip_processor:
+            print("DEBUG: CLIP 模型和處理器已載入，準備執行分類")
             perform_zero_shot_classification(clip_model, clip_processor, args.image_path, args.labels)
         print("--- CLIP 演示結束 ---")
 
