@@ -1,35 +1,46 @@
-# AI 圖像生成專案 (Text-to-Image AI Project)
+# AI 圖像生成與分析工具
 
-本專案展示了如何使用 CLIP 進行零樣本圖像分類，以及如何使用擴散模型 (Stable Diffusion) 根據文字提示生成圖像。
+這是一個基於 PyTorch 的命令列工具，整合了 Hugging Face 上的 CLIP 和 擴散 (Diffusion) 模型，提供兩種主要的 AI 圖像處理功能：
 
-## 專案結構
+1.  **零樣本圖像分類 (Zero-Shot Classification)**: 使用 CLIP-based 模型來判斷一張圖片最符合哪一個文字標籤。
+2.  **文字生成圖像 (Text-to-Image Generation)**: 使用 Diffusion-based 模型（如 Stable Diffusion）根據文字提示生成圖像。
 
-- `src/`: 包含主要的 Python 原始碼。
-  - `clip_utils.py`: CLIP 相關功能。
-  - `diffusion_utils.py`: 擴散模型相關功能。
-  - `main.py`: 主執行腳本，可選擇執行 CLIP 或擴散模型演示。
-- `images/`: 存放測試 CLIP 功能的輸入圖片。
-- `outputs/`: 存放由擴散模型生成的圖片。
-- `requirements.txt`: 專案所需的 Python 函式庫。
+## 🚀 功能
 
-## 環境設定
+* **CLIP 零樣本分類**: 給定一張圖片和多個候選標籤，模型會計算圖片與哪個標籤的關聯性最高。
+* **擴散模型圖像生成**: 根據您提供的文字提示 (prompt) 和負面提示 (negative prompt) 來創造新的圖像。
+* **CUDA 加速**: 自動檢測並使用 NVIDIA GPU (CUDA) 進行快速推理，若無 GPU 則會退回至 CPU 執行（並顯示警告）。
+* **模型可自訂**: 允許用戶透過參數指定要從 Hugging Face 下載的特定 CLIP 或擴散模型。
 
-1.  **建議使用虛擬環境：**
+## ⚙️ 安裝與設定
+
+1.  **複製專案庫 (Clone)**:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # Linux/macOS
-    # venv\Scripts\activate    # Windows
+    git clone [https://github.com/aqws6361/ml-project.git](https://github.com/aqws6361/ml-project.git)
+    cd ml-project
     ```
-2.  **安裝依賴：**
+
+2.  **安裝依賴套件**:
+    建議在 Python 虛擬環境中安裝。
     ```bash
+    # 建立 requirements.txt 檔案 (內容請參考上方)
     pip install -r requirements.txt
     ```
+    *或者，手動安裝：*
+    ```bash
+    pip install torch transformers diffusers accelerate Pillow
+    ```
 
-## 如何執行
+## 🤖 如何使用
 
-使用 `main.py` 腳本來執行不同的演示。
+此腳本透過 `main.py` 運行，並使用 `--demo` 參數來選擇模式。
 
-**執行 CLIP 零樣本分類演示：**
+### 1. 範例：CLIP 零樣本分類
 
+此模式需要一張本地圖片 (`--image_path`) 和至少一個標籤 (`--labels`)。
+
+**範例指令：**
 ```bash
-python src/main.py --demo clip --image_path images/your_test_image.jpg --labels "a photo of a cat" "a photo of a dog" "a landscape"
+python main.py --demo clip \
+    --image_path "./path/to/your/image.jpg" \
+    --labels "a photo of a dog" "a photo of a cat" "a photo of a bird"
